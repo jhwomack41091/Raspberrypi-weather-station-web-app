@@ -1,0 +1,258 @@
+<!-- templates/historical_data.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Historical Weather Data</title>
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Add this line in the head section of your HTML templates -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Add any additional styling or scripts if needed -->
+</head>
+<body>
+
+<h1>Historical Weather Data</h1>
+
+<!-- Button to toggle temperature units -->
+<button onclick="toggleTemperatureUnit()">Toggle Temperature Unit</button>
+
+<!-- Canvas for the temperature chart -->
+<canvas id="temperatureChart" width="800" height="400"></canvas>
+
+<!-- Button to toggle wind speed units -->
+<button onclick="toggleWindSpeedUnit()">Toggle Wind Speed Unit</button>
+
+<!-- Canvas for the wind chart -->
+<canvas id="windChart" width="800" height="400"></canvas>
+
+<!-- Button to toggle rainfall units -->
+<button onclick="toggleRainfallUnit()">Toggle Rainfall Unit</button>
+
+<!-- Canvas for the rainfall chart -->
+<canvas id="rainfallChart" width="800" height="400"></canvas>
+
+<script>
+    // Fetch data from Flask and pass it to Chart.js
+    var labels = {{ historical_data|map(attribute='CREATED')|tojson|safe }};
+    var ambientTemperatureCelsius = {{ historical_data|map(attribute='AMBIENT_TEMPERATURE')|tojson|safe }};
+    var groundTemperatureCelsius = {{ historical_data|map(attribute='GROUND_TEMPERATURE')|tojson|safe }};
+    var windSpeedKph = {{ historical_data|map(attribute='WIND_SPEED')|tojson|safe }};
+    var windGustsKph = {{ historical_data|map(attribute='WIND_GUST_SPEED')|tojson|safe }};
+    var rainfallMm = {{ historical_data|map(attribute='RAINFALL')|tojson|safe }};
+
+    // Initial units
+    var isCelsius = true;
+    var isKph = true;
+    var isMetric = true;
+
+    function toggleTemperatureUnit() {
+        // Toggle the temperature unit
+        isCelsius = !isCelsius;
+
+        // Update the chart
+        updateTemperatureChart();
+    }
+
+    function toggleWindSpeedUnit() {
+        // Toggle the wind speed unit
+        isKph = !isKph;
+
+        // Update the chart
+        updateWindChart();
+    }
+
+    function toggleRainfallUnit() {
+        // Toggle the rainfall unit
+        isMetric = !isMetric;
+
+        // Update the chart
+        updateRainfallChart();
+    }
+
+    function updateTemperatureChart() {
+        // Get the appropriate temperature data based on the unit
+        var ambientTemperature = isCelsius ? ambientTemperatureCelsius : convertToFahrenheit(ambientTemperatureCelsius);
+        var groundTemperature = isCelsius ? groundTemperatureCelsius : convertToFahrenheit(groundTemperatureCelsius);
+
+        // Create a line chart for Ambient and Ground Temperature
+        var ctx = document.getElementById('temperatureChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Ambient Temperature',
+                        data: ambientTemperature,
+                        borderColor: 'blue',
+                        fill: false
+                    },
+                    {
+                        label: 'Ground Temperature',
+                        data: groundTemperature,
+                        borderColor: 'green',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'category',
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: isCelsius ? 'Temperature (°C)' : 'Temperature (°F)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    }
+
+    function updateWindChart() {
+        // Get the appropriate wind speed data based on the unit
+        var windSpeed = isKph ? windSpeedKph : convertToMph(windSpeedKph);
+        var windGusts = isKph ? windGustsKph : convertToMph(windGustsKph);
+
+        // Create a line chart for Wind Speed and Wind Gusts
+        var ctx = document.getElementById('windChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Wind Speed',
+                        data: windSpeed,
+                        borderColor: 'orange',
+                        fill: false
+                    },
+                    {
+                        label: 'Wind Gusts',
+                        data: windGusts,
+                        borderColor: 'red',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'category',
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: isKph ? 'Wind Speed (km/h)' : 'Wind Speed (mph)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    }
+
+    function updateRainfallChart() {
+        // Get the appropriate rainfall data based on the unit
+        var rainfall = isMetric ? rainfallMm : convertToInches(rainfallMm);
+
+        // Create a line chart for Rainfall
+        var ctx = document.getElementById('rainfallChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Rainfall',
+                        data: rainfall,
+                        borderColor: 'cyan',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'category',
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: isMetric ? 'Rainfall (mm)' : 'Rainfall (inches)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    }
+
+    function convertToFahrenheit(celsiusTemperatures) {
+        // Convert Celsius to Fahrenheit
+        return celsiusTemperatures.map(function(celsius) {
+            return (celsius * 9/5) + 32;
+        });
+    }
+
+    function convertToMph(kphValues) {
+        // Convert km/h to mph
+        return kphValues.map(function(kph) {
+            return kph / 1.60934;
+        });
+    }
+
+    function convertToInches(mmValues) {
+        // Convert mm to inches
+        return mmValues.map(function(mm) {
+            return mm / 25.4;
+        });
+    }
+
+    // Initial chart creation
+    updateTemperatureChart();
+    updateWindChart();
+    updateRainfallChart();
+</script>
+
+<script src="/static/js/dashboard.js"></script>
+
+<!-- Add any additional content or styling as needed -->
+
+</body>
+</html>

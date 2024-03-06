@@ -1,0 +1,120 @@
+<!-- templates/current_weather.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Weather</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="../static/js/dashboard.js"></script>
+    <style>
+        /* Add any additional styling for the gear icon or navigation bar button */
+        #unit-settings, #nav-bar {
+            display: inline-block;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        #nav-bar {
+            display: none;
+        }
+
+        
+        .direction-n {
+            top: 0;
+        }
+
+        .direction-e {
+            right: 0;
+        }
+
+        .direction-s {
+            bottom: 0;
+        }
+
+        .direction-w {
+            left: 0;
+        }
+
+    </style>
+    <!-- Add any additional styling or scripts if needed -->
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Current Weather Dashboard</h1>
+        <!-- Individual buttons for each unit -->
+        <div id="temperature-settings" class="unit-settings">&#127777;</div> <!-- Thermometer icon -->
+        <div id="rainfall-settings" class="unit-settings">&#127783;</div> <!-- Rain Cloud icon -->
+        <div id="wind-settings" class="unit-settings">
+            <!-- Replace the content of this div with the SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-wind" viewBox="0 0 16 16">
+                <path d="M12.5 2A2.5 2.5 0 0 0 10 4.5a.5.5 0 0 1-1 0A3.5 3.5 0 1 1 12.5 8H.5a.5.5 0 0 1 0-1h12a2.5 2.5 0 0 0 0-5m-7 1a1 1 0 0 0-1 1 .5.5 0 0 1-1 0 2 2 0 1 1 2 2h-5a.5.5 0 0 1 0-1h5a1 1 0 0 0 0-2M0 9.5A.5.5 0 0 1 .5 9h10.042a3 3 0 1 1-3 3 .5.5 0 0 1 1 0 2 2 0 1 0 2-2H.5a.5.5 0 0 1-.5-.5"/>
+            </svg>
+        </div>
+        <div id="pressure-settings" class="unit-settings">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-speedometer2" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4M3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.39.39 0 0 0-.029-.518z"/>
+                <path fill-rule="evenodd" d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A8 8 0 0 1 0 10m8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3"/>
+            </svg>
+        </div>
+        <p id="date-time"></p>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="air-box">
+            <p><strong>Ambient Temperature:</strong> <span id="air-temperature"></span></p>
+            <p><strong>Humidity:</strong> <span id="humidity"></span></p>
+        </div>
+
+        <!-- Wind Direction Compass -->
+        <div id="wind-compass" class="wind-compass">
+            <div id="compass-rose">
+                <div class="direction-n">N</div>
+                <div class="direction-e">E</div>
+                <div class="direction-s">S</div>
+                <div class="direction-w">W</div>
+                <div id="arrow" style="transform: rotate({{ current_data.WIND_DIRECTION }}deg);"></div>
+                <div id="wind-direction-info">
+                    <span id="wind-direction-degrees"></span>
+                    <span id="wind-direction-cardinal"></span>
+                </div>
+            </div>
+            <p style="color: #0d92f8"><strong>Dewpoint:</strong> <span id="dewpoint"></span></p>
+        </div>
+
+        <div class="wind-speed-box">
+            <p><strong>Wind Speed:</strong> <span id="wind-speed"></span></p>
+            <p><strong>Wind Gust:</strong> <span id="wind-gust"></span></p>
+        </div>
+
+        <div class="rainfall-box">
+            <canvas id="rainGraph" width="400" height="200"></canvas>
+            <p><strong>Rainfall:</strong> <span id="current-rainfall"></span></p>
+        </div>
+
+        <div class="ground-temp-box">
+            <p><strong>Ground Temperature:</strong> <span id="ground-temperature"></span></p>
+        </div>
+
+        <div class="pressure-box">
+            <canvas id="pressureGraph" width="400" height="200"></canvas>
+            <p><strong>Barometric Pressure:</strong> <span id="current-pressure"></span></p>
+        </div>
+
+        <!-- Navigation bar content -->
+        <div id="nav-bar">
+            <p>Navigation Bar</p>
+            <a href="/historical_data">Historical Data</a>
+        </div>
+    </div>
+</div>
+
+<!-- Add any additional content or styling as needed -->
+
+</body>
+</html>
