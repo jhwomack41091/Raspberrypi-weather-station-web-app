@@ -1,0 +1,229 @@
+/* static/css/style.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #36454f; /* Charcoal gray background color */
+    margin: 0;
+    padding: 0;
+}
+
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+}
+
+.openbtn:hover {
+    background-color: #444;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.dashboard-header {
+    text-align: center;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+.dashboard-content {
+    flex-grow: 1;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.dashboard-grid-item {
+    width: 30%;
+    height: 100%;
+}
+
+.air-box {
+    background-color: #333;
+    color: #ffa500;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.direction-n {
+    top: 0;
+}
+
+.direction-e {
+    right: 0;
+}
+
+.direction-s {
+    bottom: 0;
+}
+
+.direction-w {
+    left: 0;
+}
+
+#wind-compass {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%; /* Set the width of the compass */
+    height: 100%; /* Set the width of the compass */
+}
+
+#compass-rose {
+    position: relative;
+    width: 2in; /* Make sure it takes the full width of the compass */
+    height: 2in; /* Make sure it takes the full height of the compass */
+    border: 1px solid white; /* Add a thin white border */
+    border-radius: 50%; /* Make it a circle */
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.direction-n, .direction-e, .direction-s, .direction-w {
+    position: absolute;
+    font-size: 14px;
+    font-weight: bold;
+    color: white; /* Set the text color to white */
+}
+
+#arrow {
+    position: absolute;
+    width: 1in;
+    height: 2px;
+    border-style: solid;
+    border-width: 10px 5px 0;
+    border-color: transparent transparent transparent white; /* Set the color of the arrow */
+    transform-origin: 50% 100%;
+    transform: rotate(0deg);
+}
+
+#wind-direction-info {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white; /* Set the color of the text */
+    font-size: 14px; /* Adjust the font size */
+}
+
+#wind-direction-degrees {
+    font-weight: bold;
+}
+
+#wind-direction-cardinal {
+    font-weight: normal;
+}
+
+/* Add any additional styling for the cardinal direction text */
+.cardinal-direction {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.wind-speed-box {
+    background-color: #333;
+    color: #fa5700;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.rainfall-box {
+    background-color: #333;
+    color: #0d92f8;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.ground-temp-box {
+    background-color: #333;
+    color: #08e217;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.pressure-box {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+#nav-bar {
+    text-align: center;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+#nav-bar a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#nav-bar a:hover {
+    text-decoration: underline;
+}
+
+/* Add this style to arrange buttons side by side */
+.unit-settings {
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+    font-size: 36px;
+}
